@@ -4,8 +4,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        StudentManagement manager = new  StudentManagement();
+        StudentManagement manager3 = new  StudentManagement();
 
-        manager .deleteStudentsByAge(22);
+        manager3 .deleteStudentsByAge(22);
     }
 }
