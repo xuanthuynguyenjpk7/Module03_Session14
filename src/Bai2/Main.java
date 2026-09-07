@@ -4,9 +4,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        StudentManagement manager = new StudentManagement();
+        StudentDAO studentDAO = new StudentDAO();
 
-        manager.updateStudent(
+        studentDAO.updateStudent(
                 1,
                 "Nguyen Van An",
                 25
