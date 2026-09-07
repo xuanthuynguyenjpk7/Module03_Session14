@@ -1,4 +1,4 @@
-package Bai2;
+package Bai3;
 
 import Bai1.ConnectionDB;
 
@@ -6,37 +6,41 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class StudentDAO {
+public class StudentManagement {
 
-    public void updateStudent(int id, String name, int age) {
+    public void deleteStudentsByAge(int age) {
 
         Connection conn = null;
         CallableStatement cstmt = null;
 
         try {
+            // 1. Kết nối database
             conn = ConnectionDB.getConnection();
 
+            // 2. Tắt Auto Commit
             conn.setAutoCommit(false);
 
-            String sql = "{CALL update_student(?, ?, ?)}";
+            // 3. Gọi Stored Procedure
+            String sql = "{CALL delete_students_by_age(?)}";
             cstmt = conn.prepareCall(sql);
 
-            cstmt.setInt(1, id);
-            cstmt.setString(2, name);
-            cstmt.setInt(3, age);
+            // 4. Truyền tuổi vào Procedure
+            cstmt.setInt(1, age);
 
+            // 5. Thực hiện DELETE
             int result = cstmt.executeUpdate();
 
-            if (result > 0) {
-                conn.commit();
-                System.out.println("Cập nhật sinh viên thành công!");
-            } else {
-                conn.rollback();
-                System.out.println("Không tìm thấy sinh viên!");
-            }
+            // 6. Commit transaction
+            conn.commit();
+
+            // 7. Thông báo số lượng đã xóa
+            System.out.println(
+                    "Đã xóa " + result + " sinh viên có tuổi nhỏ hơn " + age
+            );
 
         } catch (SQLException e) {
 
+            // Có lỗi -> Rollback
             try {
                 if (conn != null) {
                     conn.rollback();
@@ -45,16 +49,18 @@ public class StudentDAO {
                 ex.printStackTrace();
             }
 
-            System.out.println("Cập nhật sinh viên thất bại!");
+            System.out.println("Xóa sinh viên thất bại!");
             System.out.println("Lỗi: " + e.getMessage());
 
         } finally {
 
+            // Đóng CallableStatement
             try {
                 if (cstmt != null) {
                     cstmt.close();
                 }
 
+                // Đóng Connection
                 if (conn != null) {
                     conn.close();
                 }
